@@ -15,18 +15,24 @@ export class OffersPage implements OnInit, OnDestroy {
 
   offers: Place[];
   placesSub: Subscription;
+  isLoading = false;
 
   constructor( private placesSrvc: PlacesService, private router: Router ) { }
 
   ngOnInit() {
     this.placesSub = this.placesSrvc.places.subscribe(places => {
-      this.offers = [...places];
+      this.offers = places;
     });
     console.log('OFFERS....');
     console.log(this.offers);
   }
 
-  
+  ionViewWillEnter() {
+    this.isLoading = true;
+    this.placesSrvc.fetchPlaces().subscribe(() => {
+      this.isLoading = false;
+    });
+  }
 
   onEdit(offerId: string, slidingItem: IonItemSliding) {
     slidingItem.close();
